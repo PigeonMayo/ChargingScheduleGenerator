@@ -47,6 +47,8 @@ namespace ChargingScheduleGenerator
             return TimeToCharge;
         }
 
+      
+
         /// <summary>
         /// converts the plug in time to a usable DateTime format
         /// </summary>
@@ -73,15 +75,38 @@ namespace ChargingScheduleGenerator
         /// checks if the car should be currently charging  
         /// </summary>
         /// <returns>bool</returns>
-        public bool isCharging()
+        public bool BatteryLow(JsonModel item)
         {
-            Random random = new Random();
-            int randomNumber = random.Next(1, 11);
 
-            bool result = randomNumber < 5;
+            bool result = false;
 
+            /// Calculating the battery percentage by taking the current battery level dividing it by the battery Capacity and multiplying it by 100
+            /// to see if it falls in the direct charging percentage value
+            decimal batteryPerc = (item.carData.currentBatteryLevel / item.carData.batteryCapacity) * 100;
+
+            if (batteryPerc < 20)
+            {
+                result = true;
+
+            }
 
             return result;
+        }
+
+
+        /// <summary>
+        /// Determines if the battery needs to charge for this period of time
+        /// </summary>
+        /// <param name="jsonModel"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        internal bool IsCharging(DateTime dtStartDate, DateTime dtEndDate)
+        {
+            DateTime currentTime = DateTime.Now;
+
+            bool bResult = (currentTime >= dtStartDate && currentTime <= dtEndDate ? true :false);
+
+            return bResult;
         }
 
         /// <summary>
@@ -151,6 +176,28 @@ namespace ChargingScheduleGenerator
             Date = DateToConvert.ToString().Replace("/", "-").Replace(" ", "T") + ":00Z";
 
             return Date;
+        }
+
+
+        public void WriteToFile(DateTime dtStartDate, DateTime dtEndDate, bool bCharging)
+        {
+            JsonDataWrite data = new JsonDataWrite
+            {
+                startTime = DateToJson(dtStartDate),
+                endTime = DateToJson(dtEndDate),
+                isCharging = bCharging,
+
+            };
+
+            // Convert the instance to JSON
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+
+            // Specify the path to the JSON file
+            string filePath = Path.Combine(Environment.CurrentDirectory, @"..\..\..\JsonData\OutputJsonFile.json");
+
+            // Write the JSON to the file
+            File.WriteAllText(filePath, json);
+
         }
     }
 }

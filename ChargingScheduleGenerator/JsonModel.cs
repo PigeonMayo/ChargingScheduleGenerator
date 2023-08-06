@@ -38,9 +38,9 @@ namespace ChargingScheduleGenerator
 
     public class JsonDataWrite
     {
-        public static string startTime { get; set; }
-        public static string endTime { get; set; }
-        public static bool isCharging { get; set; }
+        public  string startTime { get; set; }
+        public  string endTime { get; set; }
+        public  bool isCharging { get; set; }
     }
 
 
