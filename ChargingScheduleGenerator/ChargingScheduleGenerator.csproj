@@ -10,5 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-
+  <!-- Created by: Jaco Durand
+  Email: jacodurand02@gmail.com
+  Cell : 0734670175
+  -->
 </Project>
